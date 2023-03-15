@@ -1,6 +1,9 @@
 var io = require('socket.io-client');
 var socket = io('https://bot.generals.io');
 
+// You can use any name as custom_game_id, user_id and username, as long as it is uniq
+// except username needs to start with [Bot]
+// when you develop, it's better to use a private game.
 var custom_game_id = 'certsy_dev_fun';
 var user_id = 'generals_id_20230315';
 var username = '[Bot]_id_20230315';
@@ -38,7 +41,7 @@ function join_and_start_game(socket){
   // Custom games are a great way to test your bot while you develop it because you can play against your bot!
   socket.emit('join_private', custom_game_id, user_id);
 
-  // need to wait a moment to force_start, no event to regester.
+  // need to wait a moment to force_start, no event to hook.
   setTimeout(function(){
     socket.emit('set_force_start', custom_game_id, true);
   },500)
