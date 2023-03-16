@@ -8,6 +8,7 @@ var custom_game_id = 'certsy_dev_fun';
 var user_id = 'generals_id_20230315';
 var username = '[Bot]_id_20230315';
 
+var Bot = require("./bots/MyBot v1/bot.js")
 
 socket.on('disconnect', function() {
 	console.error('Disconnected from server.');
@@ -61,6 +62,8 @@ var playerIndex;
 var generals; // The indicies of generals we have vision of.
 var cities = []; // The indicies of cities we have vision of.
 var map = [];
+var usernames;
+var bot;
 
 /* Returns a new array created by patching the diff into the old array.
  * The diff formatted with alternating matching and mismatching segments:
@@ -90,63 +93,100 @@ function patch(old, diff) {
 
 socket.on('game_start', function(data) {
 	// Get ready to start playing the game.
-	playerIndex = data.playerIndex;
-	var replay_url = 'https://bot.generals.io/replays/' + encodeURIComponent(data.replay_id);
+
+        usernames = data.usernames
+        bot = new Bot()
+  	playerIndex = data.playerIndex;
+	replay_url = 'http://bot.generals.io/replays/' + encodeURIComponent(data.replay_id);
 	console.log('Game starting! The replay will be available after the game at ' + replay_url);
+
 });
 
 socket.on('game_update', function(data) {
-	// Patch the city and map diffs into our local variables.
-	cities = patch(cities, data.cities_diff);
-	map = patch(map, data.map_diff);
-	generals = data.generals;
+    // Patch the city and map diffs into our local variables.
+    cities = patch(cities, data.cities_diff);
+    map = patch(map, data.map_diff);
+    generals = data.generals;
+    var step = data.turn
+    
+    // TODO: print some useful data during game
+    console.log(step)
 
-	// The first two terms in |map| are the dimensions.
-	var width = map[0];
-	var height = map[1];
-	var size = width * height;
+    // The first two terms in |map| are the dimensions.
+    var width = map[0];
+    var height = map[1];
+    var size = width * height;
 
-	// The next |size| terms are army values.
-	// armies[0] is the top-left corner of the map.
-	var armies = map.slice(2, size + 2);
+    // The next |size| terms are army values.
+    // armies[0] is the top-left corner of the map.
+    var armies = map.slice(2, size + 2);
 
-	// The last |size| terms are terrain values.
-	// terrain[0] is the top-left corner of the map.
-	var terrain = map.slice(size + 2, size + 2 + size);
+    // The last |size| terms are terrain values.
+    // terrain[0] is the top-left corner of the map.
+    var terrain = map.slice(size + 2, size + 2 + size);
+    var owners = Array(size)
 
-	// Make a random move.
-	while (true) {
-		// Pick a random tile.
-		var index = Math.floor(Math.random() * size);
-
-		// If we own this tile, make a random move starting from it.
-		if (terrain[index] === playerIndex) {
-			var row = Math.floor(index / width);
-			var col = index % width;
-			var endIndex = index;
-
-			var rand = Math.random();
-			if (rand < 0.25 && col > 0) { // left
-				endIndex--;
-			} else if (rand < 0.5 && col < width - 1) { // right
-				endIndex++;
-			} else if (rand < 0.75 && row < height - 1) { // down
-				endIndex += width;
-			} else if (row > 0) { //up
-				endIndex -= width;
-			} else {
-				continue;
-			}
-
-			// Would we be attacking a city? Don't attack cities.
-			if (cities.indexOf(endIndex) >= 0) {
-				continue;
-			}
-
-			socket.emit('attack', index, endIndex);
-			break;
-		}
-	}
+    for(var i = 0; i < terrain.length; i++){
+        var t = terrain[i]
+        if(t == TILE_EMPTY){
+            terrain[i] = 0
+            owners[i] = -1
+        }else if(t == TILE_MOUNTAIN){
+            terrain[i] = -1
+            owners[i] = -1
+        }else if(t == TILE_FOG){
+            terrain[i] = 0
+            owners[i] = -1
+        }else if(t == TILE_FOG_OBSTACLE){
+            terrain[i] = -1
+            owners[i] = -1
+        }else{
+            terrain[i] = 0
+            owners[i] = t
+        }
+    }
+    
+    for(var i = 0; i < cities.length; i++){
+        terrain[cities[i]] = 1
+    }
+    
+    for(var i = 0; i < generals.length; i++){
+        if(generals[i] < 0){ continue; }
+        terrain[generals[i]] = 2
+    }
+    
+    var rows = Array(height)
+    // Precomputed Rows
+    for(var y = 0; y < height; y++){
+        rows[y] = Array(width)
+        for(var x = 0; x < width; x++){
+            rows[y][x] = y * width + x
+        }
+    }
+    
+    // Convert to our own map style
+    
+    var runnerMap = {
+            playerCount: usernames.length,
+            activePlayerCount: usernames.length,
+            width: width,
+            height: height,
+            size: size,
+            strengths: armies,
+            owners: owners,
+            terrain: terrain,
+            rows: rows,
+            step: data.step
+        }
+    
+    
+    // Call bot
+    
+    move = bot.doStep(runnerMap, playerIndex)
+    // console.log(move)
+    if(move!=undefined){
+        socket.emit('attack', move[0], move[1]);
+    }
 });
 
 function leaveGame(data) {
