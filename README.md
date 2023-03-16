@@ -10,3 +10,13 @@ $ cd generals.io-bot
 $ npm install
 $ node main.js
 ```
+
+## Local Development
+
+```
+$ python3 -m http.server 8000
+
+chrome: open localhost:8000
+```
+
+This will open a local map with two pre-defined bots, which will show you how the army moves.
