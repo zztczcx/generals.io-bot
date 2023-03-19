@@ -30,6 +30,10 @@ This will open a local map with two pre-defined bots, which will show you how th
 ```
 
 ```
+  The whole map is an one-dimensional array.
+  the top-left corner is index 0.
+
+
   runnerMap = {
     width: width,
     height: height,
@@ -42,13 +46,16 @@ This will open a local map with two pre-defined bots, which will show you how th
   }
 
   owners: [-1, 0, 1, 2, 3, .....size]
-           -1 : not occupied or no owner,
+                     -1 : not occupied or no owner,
            0, 1, 2, ....: playerIndex
 
 
   terrain: [-1, 0, 1, 2]
-          -1: mean mountain or obstables;
-          0 : empty
-          1: city
-          2: general
+          -1: mountain or obstables;
+           0: empty
+           1: city
+           2: general
+
+  strenths: [0,0,11,55,1,2, .....size]
+          how many army on each tile
 ```
