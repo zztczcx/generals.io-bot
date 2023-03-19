@@ -50,7 +50,7 @@ This will open a local map with two pre-defined bots, which will show you how th
            0, 1, 2, ....: playerIndex
 
 
-  terrain: [-1, 0, 1, 2]
+  terrain: [-1, 0, 1, 2, 0, ....size]
           -1: mountain or obstables;
            0: empty
            1: city
