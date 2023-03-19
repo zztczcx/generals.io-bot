@@ -36,8 +36,26 @@ function print_game_map(runnerMap, terrain, armies, owners){
 
   aggregated_array = zip(terrain, armies, owners)
 
-  console.log(aggregated_array, 1111)
+  print_aggregated_tiles(aggregated_array, runnerMap['width'])
 
+}
+
+function print_aggregated_tiles(aggregated_array, slice_width){
+  aggregated_array.each_slice(slice_width, function(slice) {
+    new_slice = slice.map(tile => {
+      if (tile[0] == -1){
+        return('⛰')
+      }
+      else if (tile[0] == 1){
+        return('⛫' + tile[1]) 
+      }
+      else{
+        return tile[1].toString();
+      }
+    })
+
+    console.log(new_slice.map(x => x.padStart(3)).join(','))
+  });
 }
 
 /* Returns a new array created by patching the diff into the old array.
@@ -169,7 +187,7 @@ function generate_runner_map(data){
     step: data.step
   }
 
-  print_game_map(runnerMap, runnerMap['terrain'], runnerMap['strengths'], runnerMap['owners']);
+  print_game_map({...runnerMap}, runnerMap['terrain'], runnerMap['strengths'], runnerMap['owners']);
   return runnerMap;
 }
 
