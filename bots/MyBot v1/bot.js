@@ -5,6 +5,7 @@ module.exports = function(){
     
     this.doStep = function(map, playerIndex){
         var sources = [];
+
         // Find a square of mine with more than one strength on it
         for(var i = 0; i<= map.size; i++ ){
             if(map.owners[i] != playerIndex) { continue; }

@@ -53,6 +53,7 @@ function join_and_start_game(socket){
 // Any tile with a nonnegative value is owned by the player corresponding to its value.
 // For example, a tile with value 1 is owned by the player with playerIndex = 1.
 var TILE_EMPTY = -1;
+var TILE_CITY = 1;
 var TILE_MOUNTAIN = -2;
 var TILE_FOG = -3;
 var TILE_FOG_OBSTACLE = -4; // Cities and Mountains show up as Obstacles in the fog of war.
@@ -181,20 +182,53 @@ socket.on('game_update', function(data) {
     
     
     // Call bot
-    
     move = bot.doStep(runnerMap, playerIndex)
+
+    print_game_map(runnerMap, terrain, armies, owners);
+
     // console.log(move)
     if(move!=undefined){
         socket.emit('attack', move[0], move[1]);
     }
 });
 
-function leaveGame(data) {
-  console.log('Defeated by ' + data.killer);
+function print_game_map(runnerMap, terrain, armies, owners){
+  delete runnerMap['rows']
+  delete runnerMap['strengths']
+  delete runnerMap['owners']
+  delete runnerMap['terrain']
+  console.log("map: ", runnerMap, playerIndex)
+
+  console.log('terrain:')
+  terrain.each_slice(runnerMap['width'], function(slice){
+    console.log(slice.map(x => x.toString().padStart(3)).join(','))
+  });
+
+  console.log('Armies:')
+  armies.each_slice(runnerMap['width'], function(slice){
+    console.log(slice.map(x => x.toString().padStart(3)).join(','))
+  });
+
+  console.log('Lands owners:')
+  owners.each_slice(runnerMap['width'], function(slice){
+    console.log(slice.map(x => x.toString().padStart(3)).join(','))
+  });
+
+}
+
+function leaveGame() {
   socket.emit('leave_game');
-  console.log('leave game')
+  console.log('leave game');
 }
 
 socket.on('game_lost', leaveGame);
 
 socket.on('game_won', leaveGame);
+
+
+
+Array.prototype.each_slice = function (size, callback){
+  for (var i = 0, l = this.length; i < l; i += size){
+    callback.call(this, this.slice(i, i + size));
+  }
+};
