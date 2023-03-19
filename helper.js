@@ -1,4 +1,3 @@
-//import chalk from 'chalk';
 const chalk = require('chalk');
 
 const colors = [chalk.bgRed.bold, chalk.bgBlue.bold, chalk.bgGreen.bold, chalk.bgYellow.bold, chalk.bgCyan.bold]
@@ -199,6 +198,5 @@ function generate_runner_map(data, playerIndex, usernames){
 module.exports = {
   join_and_start_game,
   patch,
-  zip,
   generate_runner_map
 };

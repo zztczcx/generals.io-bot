@@ -20,3 +20,22 @@ chrome: open localhost:8000
 ```
 
 This will open a local map with two pre-defined bots, which will show you how the army moves.
+
+## Bot interface
+
+```
+  move = bot.doStep(runnerMap, playerIndex)     
+```
+
+```
+  runnerMap = {
+    width: width,
+    height: height,
+    size: size,
+    strengths: armies,
+    owners: owners,
+    terrain: terrain,
+    rows: rows,
+    step: step
+  }
+```
