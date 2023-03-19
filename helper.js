@@ -1,3 +1,8 @@
+//import chalk from 'chalk';
+const chalk = require('chalk');
+
+const colors = [chalk.bgRed.bold, chalk.bgBlue.bold, chalk.bgGreen.bold, chalk.bgYellow.bold, chalk.bgCyan.bold]
+
 const zip = (...arr) => Array(Math.max(...arr.map(a => a.length))).fill().map((_,i) => arr.map(a => a[i])); 
 
 Array.prototype.each_slice = function (size, callback){
@@ -6,12 +11,6 @@ Array.prototype.each_slice = function (size, callback){
   }
 };
 
-
-function leaveGame() {
-  socket.emit('leave_game');
-  console.log('leave game');
-}
-
 function print_game_map(runnerMap, terrain, armies, owners){
   delete runnerMap['rows']
   delete runnerMap['strengths']
@@ -19,20 +18,20 @@ function print_game_map(runnerMap, terrain, armies, owners){
   delete runnerMap['terrain']
   console.log("map: ", runnerMap)
 
-  console.log('terrain:')
-  terrain.each_slice(runnerMap['width'], function(slice){
-    console.log(slice.map(x => x.toString().padStart(3)).join(','))
-  });
+  // console.log('terrain:')
+  // terrain.each_slice(runnerMap['width'], function(slice){
+  //   console.log(slice.map(x => x.toString().padStart(3)).join(','))
+  // });
 
-  console.log('Armies:')
-  armies.each_slice(runnerMap['width'], function(slice){
-    console.log(slice.map(x => x.toString().padStart(3)).join(','))
-  });
+  // console.log('Armies:')
+  // armies.each_slice(runnerMap['width'], function(slice){
+  //   console.log(slice.map(x => x.toString().padStart(3)).join(','))
+  // });
 
-  console.log('Lands owners:')
-  owners.each_slice(runnerMap['width'], function(slice){
-    console.log(slice.map(x => x.toString().padStart(3)).join(','))
-  });
+  // console.log('Lands owners:')
+  // owners.each_slice(runnerMap['width'], function(slice){
+  //   console.log(slice.map(x => x.toString().padStart(3)).join(','))
+  // });
 
   aggregated_array = zip(terrain, armies, owners)
 
@@ -43,21 +42,25 @@ function print_game_map(runnerMap, terrain, armies, owners){
 function print_aggregated_tiles(aggregated_array, slice_width){
   aggregated_array.each_slice(slice_width, function(slice) {
     new_slice = slice.map(tile => {
+      var color = colors[tile[2]] || chalk.whiteBright.bold;
+      var symbol;
       if (tile[0] == -1){
-        return('⛰')
+        symbol = '⛰';
       }
       else if (tile[0] == 1){
-        return('⛫' + tile[1]) 
+        symbol = '⛫ ' + tile[1];
       }
       else if (tile[0] == 2){
-        return('♔' + tile[1]) 
+        symbol = '♛ ' + tile[1];
       }
       else{
-        return tile[1].toString();
+        symbol = tile[1].toString();
       }
+
+      return color(symbol.padStart(4)+' ')
     })
 
-    console.log(new_slice.map(x => x.padStart(3)).join(','))
+    console.log(new_slice.join(''))
   });
 }
 
@@ -114,16 +117,14 @@ var cities = []; // The indicies of cities we have vision of.
 var map = [];
 
 
-function generate_runner_map(data){
+function generate_runner_map(data, playerIndex, usernames){
 
   // Patch the city and map diffs into our local variables.
   cities = patch(cities, data.cities_diff);
   map = patch(map, data.map_diff);
   generals = data.generals;
   var step = data.turn
-
-  // TODO: print some useful data during game
-  console.log(step)
+  console.log('You are:', colors[playerIndex](usernames[playerIndex]))
 
   // The first two terms in |map| are the dimensions.
   var width = map[0];
@@ -187,7 +188,7 @@ function generate_runner_map(data){
     owners: owners,
     terrain: terrain,
     rows: rows,
-    step: data.step
+    step: step
   }
 
   print_game_map({...runnerMap}, runnerMap['terrain'], runnerMap['strengths'], runnerMap['owners']);
@@ -198,8 +199,6 @@ function generate_runner_map(data){
 module.exports = {
   join_and_start_game,
   patch,
-  //print_game_map,
-  leaveGame,
   zip,
   generate_runner_map
 };

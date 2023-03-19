@@ -61,14 +61,21 @@ socket.on('game_start', function(data) {
 });
 
 socket.on('game_update', function(data) {
-  runnerMap = Helper.generate_runner_map(data)
-  move = bot.doStep(runnerMap, playerIndex)
+  console.log('scores:', data.scores)
+  runnerMap = Helper.generate_runner_map(data, playerIndex, usernames)
+  move = bot.doStep(runnerMap, playerIndex)     
 
   if(move!=undefined){
     socket.emit('attack', move[0], move[1]);
   }
 });
 
-socket.on('game_lost', Helper.leaveGame);
+socket.on('game_lost', ()=>{
+  console.log('game lost');
+  socket.emit('leave_game');
+});
 
-socket.on('game_won', Helper.leaveGame);
+socket.on('game_won', ()=>{
+  console.log('game won');
+  socket.emit('leave_game');
+});
