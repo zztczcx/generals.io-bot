@@ -49,6 +49,9 @@ function print_aggregated_tiles(aggregated_array, slice_width){
       else if (tile[0] == 1){
         return('⛫' + tile[1]) 
       }
+      else if (tile[0] == 2){
+        return('♔' + tile[1]) 
+      }
       else{
         return tile[1].toString();
       }
