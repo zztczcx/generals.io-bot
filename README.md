@@ -25,6 +25,8 @@ This will open a local map with two pre-defined bots, which will show you how th
 
 ```
   move = bot.doStep(runnerMap, playerIndex)     
+
+  move : [source, destination, false] ('false' means not using 50% of army)
 ```
 
 ```
@@ -38,4 +40,15 @@ This will open a local map with two pre-defined bots, which will show you how th
     rows: rows,
     step: step
   }
+
+  owners: [-1, 0, 1, 2, 3, .....size]
+           -1 : not occupied or no owner,
+           0, 1, 2, ....: playerIndex
+
+
+  terrain: [-1, 0, 1, 2]
+          -1: mean mountain or obstables;
+          0 : empty
+          1: city
+          2: general
 ```
