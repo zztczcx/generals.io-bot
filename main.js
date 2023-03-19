@@ -55,7 +55,7 @@ socket.on('game_start', function(data) {
         console.log('playerIndex:', playerIndex);
         console.log('usernames:', usernames);
   
-	replay_url = 'http://bot.generals.io/replays/' + encodeURIComponent(data.replay_id);
+	replay_url = 'https://bot.generals.io/replays/' + encodeURIComponent(data.replay_id);
 	console.log('Game starting! The replay will be available after the game at ' + replay_url);
 
 });

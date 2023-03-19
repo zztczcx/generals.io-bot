@@ -1,15 +1,16 @@
 const zip = (...arr) => Array(Math.max(...arr.map(a => a.length))).fill().map((_,i) => arr.map(a => a[i])); 
 
-function leaveGame() {
-  socket.emit('leave_game');
-  console.log('leave game');
-}
-
 Array.prototype.each_slice = function (size, callback){
   for (var i = 0, l = this.length; i < l; i += size){
     callback.call(this, this.slice(i, i + size));
   }
 };
+
+
+function leaveGame() {
+  socket.emit('leave_game');
+  console.log('leave game');
+}
 
 function print_game_map(runnerMap, terrain, armies, owners){
   delete runnerMap['rows']
