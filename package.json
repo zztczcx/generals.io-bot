@@ -4,15 +4,15 @@
   "description": "",
   "main": "main.js",
   "dependencies": {
+    "chalk": "^5.2.0",
     "socket.io-client": "^1.7.2"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo 'No tests implemented.'"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vzhou842/generals.io-Node.js-Bot-example.git"
+    "url": "git@github.com:zztczcx/generals.io-bot.git"
   },
   "keywords": [
     "generals.io",
@@ -21,10 +21,10 @@
     "javascript",
     "example"
   ],
-  "author": "Victor Zhou",
+  "author": "zztczcx",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vzhou842/generals.io-Node.js-Bot-example/issues"
+    "url": "https://github.com/zztczcx/generals.io-bot/issues"
   },
-  "homepage": "https://github.com/vzhou842/generals.io-Node.js-Bot-example#readme"
+  "homepage": "https://github.com/zztczcx/generals.io-bot#readme"
 }
