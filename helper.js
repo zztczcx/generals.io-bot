@@ -41,29 +41,29 @@ function print_game_map(runnerMap, terrain, armies, owners){
 }
 
 /* Returns a new array created by patching the diff into the old array.
- * The diff formatted with alternating matching and mismatching segments:
- * <Number of matching elements>
- * <Number of mismatching elements>
- * <The mismatching elements>
- * ... repeated until the end of diff.
- * Example 1: patching a diff of [1, 1, 3] onto [0, 0] yields [0, 3].
- * Example 2: patching a diff of [0, 1, 2, 1] onto [0, 0] yields [2, 0].
- */
+* The diff formatted with alternating matching and mismatching segments:
+* <Number of matching elements>
+* <Number of mismatching elements>
+* <The mismatching elements>
+* ... repeated until the end of diff.
+* Example 1: patching a diff of [1, 1, 3] onto [0, 0] yields [0, 3].
+* Example 2: patching a diff of [0, 1, 2, 1] onto [0, 0] yields [2, 0].
+*/
 function patch(old, diff) {
-	var out = [];
-	var i = 0;
-	while (i < diff.length) {
-		if (diff[i]) {  // matching
-			Array.prototype.push.apply(out, old.slice(out.length, out.length + diff[i]));
-		}
-		i++;
-		if (i < diff.length && diff[i]) {  // mismatching
-			Array.prototype.push.apply(out, diff.slice(i + 1, i + 1 + diff[i]));
-			i += diff[i];
-		}
-		i++;
-	}
-	return out;
+  var out = [];
+  var i = 0;
+  while (i < diff.length) {
+    if (diff[i]) {  // matching
+      Array.prototype.push.apply(out, old.slice(out.length, out.length + diff[i]));
+    }
+    i++;
+    if (i < diff.length && diff[i]) {  // mismatching
+      Array.prototype.push.apply(out, diff.slice(i + 1, i + 1 + diff[i]));
+      i += diff[i];
+    }
+    i++;
+  }
+  return out;
 }
 
 function join_and_start_game(socket, custom_game_id, user_id){
@@ -94,13 +94,13 @@ var map = [];
 
 
 function generate_runner_map(data){
-  
+
   // Patch the city and map diffs into our local variables.
   cities = patch(cities, data.cities_diff);
   map = patch(map, data.map_diff);
   generals = data.generals;
   var step = data.turn
-  
+
   // TODO: print some useful data during game
   console.log(step)
 
@@ -119,55 +119,55 @@ function generate_runner_map(data){
   var owners = Array(size)
 
   for(var i = 0; i < terrain.length; i++){
-      var t = terrain[i]
-      if(t == TILE_EMPTY){
-          terrain[i] = 0
-          owners[i] = -1
-      }else if(t == TILE_MOUNTAIN){
-          terrain[i] = -1
-          owners[i] = -1
-      }else if(t == TILE_FOG){
-          terrain[i] = 0
-          owners[i] = -1
-      }else if(t == TILE_FOG_OBSTACLE){
-          terrain[i] = -1
-          owners[i] = -1
-      }else{
-          terrain[i] = 0
-          owners[i] = t
-      }
+    var t = terrain[i]
+    if(t == TILE_EMPTY){
+      terrain[i] = 0
+      owners[i] = -1
+    }else if(t == TILE_MOUNTAIN){
+      terrain[i] = -1
+      owners[i] = -1
+    }else if(t == TILE_FOG){
+      terrain[i] = 0
+      owners[i] = -1
+    }else if(t == TILE_FOG_OBSTACLE){
+      terrain[i] = -1
+      owners[i] = -1
+    }else{
+      terrain[i] = 0
+      owners[i] = t
+    }
   }
-  
+
   for(var i = 0; i < cities.length; i++){
-      terrain[cities[i]] = 1
+    terrain[cities[i]] = 1
   }
-  
+
   for(var i = 0; i < generals.length; i++){
-      if(generals[i] < 0){ continue; }
-      terrain[generals[i]] = 2
+    if(generals[i] < 0){ continue; }
+    terrain[generals[i]] = 2
   }
-  
+
   var rows = Array(height)
   // Precomputed Rows
   for(var y = 0; y < height; y++){
-      rows[y] = Array(width)
-      for(var x = 0; x < width; x++){
-          rows[y][x] = y * width + x
-      }
+    rows[y] = Array(width)
+    for(var x = 0; x < width; x++){
+      rows[y][x] = y * width + x
+    }
   }
-  
+
   // Convert to our own map style
-  
+
   var runnerMap = {
-          width: width,
-          height: height,
-          size: size,
-          strengths: armies,
-          owners: owners,
-          terrain: terrain,
-          rows: rows,
-          step: data.step
-      }
+    width: width,
+    height: height,
+    size: size,
+    strengths: armies,
+    owners: owners,
+    terrain: terrain,
+    rows: rows,
+    step: data.step
+  }
 
   print_game_map(runnerMap, runnerMap['terrain'], runnerMap['strengths'], runnerMap['owners']);
   return runnerMap;

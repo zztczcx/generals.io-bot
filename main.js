@@ -24,16 +24,16 @@ var playerIndex;
 
 
 socket.on('disconnect', function() {
-	console.error('Disconnected from server.');
-	process.exit(1);
+  console.error('Disconnected from server.');
+  process.exit(1);
 });
 
 socket.on('connect', function() {
-	console.log('Connected to server.');
+  console.log('Connected to server.');
 
-	// Set the username for the bot.
-	// This should only ever be done once. See the API reference for more details.
-	socket.emit('set_username', user_id, username);
+  // Set the username for the bot.
+  // This should only ever be done once. See the API reference for more details.
+  socket.emit('set_username', user_id, username);
 });
 
 socket.on('error_set_username', function(info){
@@ -45,28 +45,28 @@ socket.on('error_set_username', function(info){
 
 
 socket.on('game_start', function(data) {
-	// Get ready to start playing the game.
-        usernames = data.usernames
-  	playerIndex = data.playerIndex;
+  // Get ready to start playing the game.
+  usernames = data.usernames
+  playerIndex = data.playerIndex;
 
-        //TODO
-        //playerCount: usernames.length,
-        //activePlayerCount: usernames.length,
-        console.log('playerIndex:', playerIndex);
-        console.log('usernames:', usernames);
-  
-	replay_url = 'https://bot.generals.io/replays/' + encodeURIComponent(data.replay_id);
-	console.log('Game starting! The replay will be available after the game at ' + replay_url);
+  //TODO
+  //playerCount: usernames.length,
+  //activePlayerCount: usernames.length,
+  console.log('playerIndex:', playerIndex);
+  console.log('usernames:', usernames);
+
+  replay_url = 'https://bot.generals.io/replays/' + encodeURIComponent(data.replay_id);
+  console.log('Game starting! The replay will be available after the game at ' + replay_url);
 
 });
 
 socket.on('game_update', function(data) {
-    runnerMap = Helper.generate_runner_map(data)
-    move = bot.doStep(runnerMap, playerIndex)
+  runnerMap = Helper.generate_runner_map(data)
+  move = bot.doStep(runnerMap, playerIndex)
 
-    if(move!=undefined){
-        socket.emit('attack', move[0], move[1]);
-    }
+  if(move!=undefined){
+    socket.emit('attack', move[0], move[1]);
+  }
 });
 
 socket.on('game_lost', Helper.leaveGame);
