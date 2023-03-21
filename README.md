@@ -59,3 +59,8 @@ This will open a local map with two pre-defined bots, which will show you how th
   strenths: [0,0,11,55,1,2, .....size]
           how many army on each tile
 ```
+
+
+## ScreenShot
+
+![console](./console.jpg?raw=true "console")

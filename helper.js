@@ -15,7 +15,9 @@ function print_game_map(runnerMap, terrain, armies, owners){
   delete runnerMap['strengths']
   delete runnerMap['owners']
   delete runnerMap['terrain']
+
   console.log("map: ", runnerMap)
+  console.log("")
 
   // console.log('terrain:')
   // terrain.each_slice(runnerMap['width'], function(slice){

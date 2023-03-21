@@ -22,6 +22,7 @@ var bot = new Bot();
 var usernames;
 var playerIndex;
 
+console.clear()
 
 socket.on('disconnect', function() {
   console.error('Disconnected from server.');
@@ -60,7 +61,12 @@ socket.on('game_start', function(data) {
 
 });
 
+const process = require('process')
+const rdl = require("readline")
+
 socket.on('game_update', function(data) {
+  rdl.cursorTo(process.stdout, 0, 6)
+
   console.log('scores:', data.scores)
   runnerMap = Helper.generate_runner_map(data, playerIndex, usernames)
   move = bot.doStep(runnerMap, playerIndex)     
