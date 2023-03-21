@@ -52,7 +52,7 @@ function print_aggregated_tiles(aggregated_array, slice_width){
         symbol = '⛫ ' + tile[1];
       }
       else if (tile[0] == 2){
-        symbol = '♛ ' + tile[1];
+        symbol = '👑' + tile[1];
       }
       else{
         symbol = tile[1].toString();
